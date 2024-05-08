@@ -8,11 +8,11 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSnackbar } from 'notistack';
 import axios from 'axios';
-import signupLogo from '../../assets/add-user.png';
+import signupLogo from '../../../assets/add-user.png';
 
 const defaultTheme = createTheme();
 
-export default function SignUp() {
+export default function InstructorSignUp() {
   const { enqueueSnackbar } = useSnackbar();
   const [showOtpForm, setShowOtpForm] = React.useState(false);
   const [otp, setOtp] = React.useState('');
@@ -92,6 +92,7 @@ export default function SignUp() {
               phoneNumber: userData.phoneNumber,
               email: userData.email,
               password: userData.password,
+              role: 'INSTRUCTOR',
               emailToken: res.data,
             })
             .then(res => {
@@ -135,7 +136,7 @@ export default function SignUp() {
             <img src={signupLogo} alt="Login" style={{ maxWidth: '17%', height: 'auto' }} />
           </Box>
           <Typography component="h1" variant="h5">
-            SignUp
+            Instructor Registration
           </Typography>
           {!showOtpForm ? (
             <Box
@@ -182,6 +183,17 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                InputProps={{ sx: { borderRadius: 4 } }}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="role"
+                label="role"
+                id="role"
+                value="INSTRUCTOR"
+                disabled
                 InputProps={{ sx: { borderRadius: 4 } }}
               />
               <Button
