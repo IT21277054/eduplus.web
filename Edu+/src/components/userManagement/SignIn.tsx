@@ -1,12 +1,10 @@
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -14,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import axios from 'axios';
 import { AuthContext } from '../auth/authProvide';
+import loginImage from '../../assets/permission.png';
 
 const defaultTheme = createTheme();
 
@@ -22,7 +21,7 @@ export default function SignIn() {
   const navigate = useNavigate();
   const { login } = React.useContext(AuthContext);
 
-  const handleSubmit = async (event:any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     if (!data.get('email') || !data.get('password')) {
@@ -53,11 +52,10 @@ export default function SignIn() {
 
       login(res.data);
       navigate('/user');
-    } catch (err:any) {
+    } catch (err: any) {
       enqueueSnackbar(err.response.data.err, { variant: 'error' });
     }
   };
-
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -71,9 +69,12 @@ export default function SignIn() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <img
+            src={loginImage}
+            alt="Login"
+            style={{ maxWidth: '17%', height: 'auto' }}
+          />
+
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
@@ -107,8 +108,15 @@ export default function SignIn() {
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
-              sx={{ mt: 3, mb: 2, borderColor: 'primary.main' }}
+              sx={{
+                backgroundColor: '#14AA9E',
+                '&:hover': {
+                  backgroundColor: '#14AA9E',
+                },
+                mt: 3,
+                mb: 2,
+                borderColor: 'primary.main',
+              }}
             >
               Sign In
             </Button>
