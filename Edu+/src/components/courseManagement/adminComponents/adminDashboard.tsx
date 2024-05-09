@@ -15,7 +15,7 @@ export function AdminDashboard() {
   const navigate = useNavigate();
 
   const handleContentClick = () => {
-    navigate('/admin/dashboard/content');
+    navigate('/admin/dashboard/courses');
   };
 
   const handleRegistrationClick = () => {
