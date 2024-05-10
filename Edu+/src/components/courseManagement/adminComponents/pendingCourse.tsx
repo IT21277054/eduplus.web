@@ -19,13 +19,13 @@ interface CourseData {
   status: string;
 }
 export function PendingCourse() {
+  const { user} = React.useContext(AuthContext);
   const navigate = useNavigate();
   const [apiData, setApiData] = React.useState([]);
   const [errorMessage, setErrorMessage] = React.useState('');
 
   const fetchCardDetails = async () => {
-    const token =
-      'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJpZCI6IjY2M2JiYTAyYzhjYTMxMDIwZjU5MTkzMCIsImVtYWlsIjoiYWRtaW5AZWRwdXBsdXMuY29tIiwic3ViIjoiYWRtaW5AZWRwdXBsdXMuY29tIiwiaWF0IjoxNzE1MjM5NTA3LCJleHAiOjE3MTUyNDEzMDd9.gfyNzMm2VjsfnTTzhFN3THqas7UhHXTNNTLDz_ZieiQ';
+    const token =user;
     try {
       axios
         .get('http://localhost:8085/api/course/status/pending', {

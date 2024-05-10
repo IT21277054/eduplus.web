@@ -50,6 +50,7 @@ export default function SignIn() {
         data: { email: data.get('email'), password: data.get('password') },
       });
 
+      console.log(res.data)
       login(res.data);
       navigate('/user');
     } catch (err: any) {

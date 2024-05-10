@@ -1,3 +1,4 @@
+import { jwtDecode } from 'jwt-decode';
 import React, { createContext, useEffect, useState } from 'react';
 
 const defaultValue = {
@@ -23,6 +24,11 @@ export const AuthProvider = ({ children }:any) => {
         try {
           const parsedUser = JSON.parse(storedUser);
           setUser(parsedUser);
+          console.log(parsedUser)
+          const tokenExpiration = jwtDecode(parsedUser).exp * 1000;
+          if (tokenExpiration < Date.now()) {
+            logout();
+          }
         } catch (error) {
           console.error('Error parsing stored user data:', error);
           setUser(null);

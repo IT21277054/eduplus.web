@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
+import { AuthContext } from '../../auth/authProvide';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -27,6 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 interface videoData {
   video: string;
+  videoUrl:string;
   title: string;
   lectureNotes: string;
 }
@@ -44,6 +46,7 @@ interface Answer {
 }
 
 export default function CourseContent() {
+  const { user } = React.useContext(AuthContext);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
@@ -53,30 +56,24 @@ export default function CourseContent() {
     title: '',
     imageUrl: '',
   });
-
   const [questions, setQuestions] = React.useState<Question[]>([]);
   const [units, setUnits] = React.useState<videoData[]>([]);
   const [openDialog, setOpenDialog] = React.useState(false);
-
+  const token = user;
 
   const fetchCourseDetails = async () => {
-    const token = 'YourTokenHere';
     try {
-      const response = await axios.get(
-        `http://localhost:8085/api/course/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await axios.get(`http://localhost:8085/api/course/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
       const { data } = response;
-      console.log(data)
       setCourseData({
         course_id: data.course_id,
-        description: data.description,
-        title: data.title,
-        imageUrl: data.imageUrl,
+        description: data.description || 'Description not available',
+        title: data.title || 'Title not available',
+        imageUrl: data.imageUrl || '',
       });
     } catch (error) {
       console.error('Error fetching Course details:', error);
@@ -84,7 +81,6 @@ export default function CourseContent() {
   };
 
   const fetchQuizDetails = async () => {
-    const token = 'YourTokenHere';
     try {
       const response = await axios.get(
         `http://localhost:8085/api/quiz/${courseData.course_id}/quiz`,
@@ -92,7 +88,7 @@ export default function CourseContent() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       const { data } = response;
       setQuestions(data.questions);
@@ -102,7 +98,6 @@ export default function CourseContent() {
   };
 
   const fetchUnitDetails = async () => {
-    const token = 'YourTokenHere'; // Replace with your token
     try {
       const response = await axios.get(
         `http://localhost:8085/api/unit/${courseData.course_id}/unit`,
@@ -110,7 +105,7 @@ export default function CourseContent() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
       const { data } = response;
       setUnits(data.units);
@@ -138,23 +133,18 @@ export default function CourseContent() {
     setOpenDialog(false);
   };
 
-  const clickApprove = async () =>{
-    try{
-      await axios
-      .put(`http://localhost:8085/api/course/${id}/status?status=approved`)
-      .then(res => {
+  const clickApprove = async () => {
+    try {
+      await axios.put(`http://localhost:8085/api/course/${id}/status?status=approved`).then((res) => {
         enqueueSnackbar('Instructor Registration Completed', {
           variant: 'success',
         });
         navigate('/admin/dashboard/courses');
-      })
-      .catch(err =>
-        enqueueSnackbar(err.response.data.err, { variant: 'error' }),
-      );
-    }catch(err:any){
-
+      }).catch((err) => enqueueSnackbar(err.response.data.err, { variant: 'error' }));
+    } catch (err: any) {
+      console.error('Error approving course:', err);
     }
-  }
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -183,13 +173,9 @@ export default function CourseContent() {
           Course Content to Approve
         </Typography>
         <Grid container spacing={2}>
-          <Grid  item xs={8} sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Item sx={{ textAlign: 'center',flexGrow: 1 }}>
-              <Typography
-                variant="h4"
-                fontFamily="Roboto"
-                sx={{ paddingTop: 3 }}
-              >
+          <Grid item xs={8} sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Item sx={{ textAlign: 'center', flexGrow: 1 }}>
+              <Typography variant="h4" fontFamily="Roboto" sx={{ paddingTop: 3 }}>
                 {courseData.title}
               </Typography>
               <Box
@@ -199,14 +185,16 @@ export default function CourseContent() {
                   alignItems: 'center',
                 }}
               >
-                <CardMedia
-                  component="img"
-                  height="300"
-                  style={{ width: '100%' }}
-                  image={courseData.imageUrl}
-                  alt="Course Image"
-                  sx={{ paddingTop: 5, paddingBottom: 5 }}
-                />
+                {courseData.imageUrl && (
+                  <CardMedia
+                    component="img"
+                    height="300"
+                    style={{ width: '100%' }}
+                    image={courseData.imageUrl}
+                    alt="Course Image"
+                    sx={{ paddingTop: 5, paddingBottom: 5 }}
+                  />
+                )}
               </Box>
               <Typography
                 variant="body1"
@@ -243,49 +231,53 @@ export default function CourseContent() {
                 >
                   Approve
                 </Button>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    mt: 3,
-                    mb: 2,
-                    borderColor: 'primary.main',
-                  }}
-                  onClick={handleViewQuiz}
-                >
-                  View Quiz
-                </Button>
+                {questions.length > 0 && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      mt: 3,
+                      mb: 2,
+                      borderColor: 'primary.main',
+                    }}
+                    onClick={handleViewQuiz}
+                  >
+                    View Quiz
+                  </Button>
+                )}
               </Box>
             </Item>
           </Grid>
           <Grid item xs={4} sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Item  sx={{ textAlign: 'center', flexGrow: 1 }}>
-              <Typography
-                variant="h5"
-                fontFamily="Roboto"
-                sx={{ paddingTop: 3 }}
-              >
+            <Item sx={{ textAlign: 'center', flexGrow: 1 }}>
+              <Typography variant="h5" fontFamily="Roboto" sx={{ paddingTop: 3 }}>
                 Videos
               </Typography>
-              {units.map((data: videoData, index) => (
-                <Box key={index}>
-                  <Typography
-                    fontFamily="Roboto"
-                    sx={{ paddingTop: 1, fontSize: 20 }}
-                  >
-                    {data.title}
-                  </Typography>
-                  <CardMedia
-                    component="video"
-                    controls
-                    autoPlay
-                    loop
-                    muted
-                    style={{ width: '100%', marginTop: 10 }}
-                    src={data.video}
-                  />
-                </Box>
-              ))}
+              {units.length > 0 ? (
+                units.map((data: videoData, index) => (
+                  <Box key={index}>
+                    <Typography
+                      fontFamily="Roboto"
+                      sx={{ paddingTop: 1, fontSize: 20 }}
+                    >
+                      {data.title}
+                    </Typography>
+                    {data.video && (
+                      <CardMedia
+                        component="video"
+                        controls
+                        autoPlay
+                        loop
+                        muted
+                        style={{ width: '100%', marginTop: 10 }}
+                        src={data.videoUrl}
+                      />
+                    )}
+                  </Box>
+                ))
+              ) : (
+                <Typography>No videos available</Typography>
+              )}
             </Item>
           </Grid>
         </Grid>
@@ -294,18 +286,22 @@ export default function CourseContent() {
         <DialogTitle>Quiz</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column' }}>
           <Grid container spacing={2}>
-            {questions.map((question, index) => (
-              <Grid item xs={7} key={index}>
-                <Typography variant="h6">Question {index + 1}:</Typography>
-                <Typography>{question.text}</Typography>
-                {question.answers.map((answer, answerIndex) => (
-                  <Typography key={answerIndex} variant="subtitle1">
-                    {String.fromCharCode(65 + answerIndex)}. {answer.text}{' '}
-                    {answer.correct && '(Correct)'}
-                  </Typography>
-                ))}
-              </Grid>
-            ))}
+            {questions.length > 0 ? (
+              questions.map((question, index) => (
+                <Grid item xs={7} key={index}>
+                  <Typography variant="h6">Question {index + 1}:</Typography>
+                  <Typography>{question.text}</Typography>
+                  {question.answers.map((answer, answerIndex) => (
+                    <Typography key={answerIndex} variant="subtitle1">
+                      {String.fromCharCode(65 + answerIndex)}. {answer.text}{' '}
+                      {answer.correct && '(Correct)'}
+                    </Typography>
+                  ))}
+                </Grid>
+              ))
+            ) : (
+              <Typography>No quiz questions available</Typography>
+            )}
           </Grid>
         </DialogContent>
         <DialogActions>
@@ -315,3 +311,4 @@ export default function CourseContent() {
     </Box>
   );
 }
+

@@ -4,6 +4,7 @@ import App from './App.tsx'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import { SnackbarProvider } from 'notistack'
+import { AuthProvider } from './components/auth/authProvide.tsx'
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -23,9 +24,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       bodyStyle={{ height: 10 }}
     >
       <BrowserRouter>
-        {/* <AuthProvider> */}
+        <AuthProvider>
           <App />
-        {/* </AuthProvider> */}
+        </AuthProvider>
       </BrowserRouter>
     </SnackbarProvider>
   </React.StrictMode>,
