@@ -6,6 +6,7 @@ import InstructorSignUp from "./components/courseManagement/adminComponents/Inst
 import { PendingCourse } from "./components/courseManagement/adminComponents/PendingCourse"
 import CourseContent from "./components/courseManagement/adminComponents/CourseContent"
 import { AdminGuard, GuestGuard } from "./components/auth/authGuard"
+import Header from "./components/templates/Header"
 function GuestRoute() {
   return (
     <GuestGuard>

@@ -10,6 +10,8 @@ import { AuthContext } from '../../auth/authProvide';
 import { useNavigate } from 'react-router-dom';
 import image1 from '../../../assets/Register.png';
 import image2 from '../../../assets/coursecontent.png'
+import Header from '../../templates/Header';
+import { Footer } from '../../templates/Footer';
 
 export function AdminDashboard() {
   const navigate = useNavigate();
@@ -24,6 +26,9 @@ export function AdminDashboard() {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ flex: '0 0 auto', backgroundColor: '#f0f0f0' }}>
+        <Header />
+      </Box>
       <Box
         sx={{
           flex: '1 0 auto',
@@ -84,6 +89,14 @@ export function AdminDashboard() {
             </Card>
           </Grid>
         </Grid>
+      </Box>
+      <Box
+        sx={{
+          flex: '0 0 auto',
+          margin: '0 -10px -10px',
+        }}
+      >
+        <Footer />
       </Box>
     </Box>
   );

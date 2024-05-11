@@ -9,10 +9,14 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSnackbar } from 'notistack';
 import axios from 'axios';
 import signupLogo from '../../../assets/add-user.png';
+import { useNavigate } from 'react-router-dom';
+import Header from '../../templates/Header';
+import { Footer } from '../../templates/Footer';
 
 const defaultTheme = createTheme();
 
 export default function InstructorSignUp() {
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [showOtpForm, setShowOtpForm] = React.useState(false);
   const [otp, setOtp] = React.useState('');
@@ -99,6 +103,7 @@ export default function InstructorSignUp() {
               enqueueSnackbar('Instructor Registration Completed', {
                 variant: 'success',
               });
+              navigate('/admin/dashboard')
             })
             .catch(err =>
               enqueueSnackbar(err.response.data.err, { variant: 'error' }),
@@ -115,6 +120,9 @@ export default function InstructorSignUp() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <Box sx={{ flex: '0 0 auto', backgroundColor: '#f0f0f0' }}>
+        <Header />
+      </Box>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -256,6 +264,14 @@ export default function InstructorSignUp() {
           )}
         </Box>
       </Container>
+      <Box
+        sx={{
+          flex: '0 0 auto',
+          margin: '0 -10px -10px',
+        }}
+      >
+        <Footer />
+      </Box>
     </ThemeProvider>
   );
 }

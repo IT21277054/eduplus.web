@@ -11,6 +11,8 @@ import axios from 'axios';
 import { DoneOutline } from '@mui/icons-material';
 import Chip from '@mui/material/Chip';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
+import Header from '../../templates/Header';
+import { Footer } from '../../templates/Footer';
 
 interface CourseData {
   id:string;
@@ -61,6 +63,9 @@ export function PendingCourse() {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ flex: '0 0 auto', backgroundColor: '#f0f0f0' }}>
+        <Header />
+      </Box>
       <Box
         sx={{
           flex: '1 0 auto',
@@ -126,6 +131,14 @@ export function PendingCourse() {
             ))}
           </Grid>
         )}
+      </Box>
+      <Box
+        sx={{
+          flex: '0 0 auto',
+          margin: '0 -10px -10px',
+        }}
+      >
+        <Footer />
       </Box>
     </Box>
   );

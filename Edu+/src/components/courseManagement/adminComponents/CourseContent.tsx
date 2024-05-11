@@ -17,6 +17,8 @@ import {
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
 import { AuthContext } from '../../auth/authProvide';
+import Header from '../../templates/Header';
+import { Footer } from '../../templates/Footer';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -28,7 +30,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 interface videoData {
   video: string;
-  videoUrl:string;
+  videoUrl: string;
   title: string;
   lectureNotes: string;
 }
@@ -52,6 +54,7 @@ export default function CourseContent() {
   const { id } = useParams();
   const [courseData, setCourseData] = React.useState({
     course_id: '',
+    instructor_id:'',
     description: '',
     title: '',
     imageUrl: '',
@@ -63,14 +66,18 @@ export default function CourseContent() {
 
   const fetchCourseDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:8085/api/course/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await axios.get(
+        `http://localhost:8085/api/course/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       const { data } = response;
       setCourseData({
         course_id: data.course_id,
+        instructor_id :data.instructor_id,
         description: data.description || 'Description not available',
         title: data.title || 'Title not available',
         imageUrl: data.imageUrl || '',
@@ -88,7 +95,7 @@ export default function CourseContent() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const { data } = response;
       setQuestions(data.questions);
@@ -105,7 +112,7 @@ export default function CourseContent() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       const { data } = response;
       setUnits(data.units);
@@ -114,6 +121,7 @@ export default function CourseContent() {
     }
   };
 
+  
   React.useEffect(() => {
     fetchCourseDetails();
   }, []);
@@ -135,19 +143,46 @@ export default function CourseContent() {
 
   const clickApprove = async () => {
     try {
-      await axios.put(`http://localhost:8085/api/course/${id}/status?status=approved`).then((res) => {
-        enqueueSnackbar('Instructor Registration Completed', {
-          variant: 'success',
-        });
-        navigate('/admin/dashboard/courses');
-      }).catch((err) => enqueueSnackbar(err.response.data.err, { variant: 'error' }));
+      await axios
+        .put(`http://localhost:8085/api/course/${id}/status?status=approved`)
+        .then(res => {
+          enqueueSnackbar('Approved Course Content', {
+            variant: 'success',
+          });
+          navigate('/admin/dashboard/courses');
+        })
+        .catch(err =>
+          enqueueSnackbar(err.response.data.err, { variant: 'error' }),
+        );
     } catch (err: any) {
       console.error('Error approving course:', err);
     }
   };
 
+  const handleReject = async() =>{
+    try {
+      await axios
+        .put(`http://localhost:8085/api/course/${id}/status?status=rejected`)
+        .then(res => {
+          enqueueSnackbar('Rejected', {
+            variant: 'error',
+          });
+          navigate('/admin/dashboard/courses');
+        })
+        .catch(err =>
+          enqueueSnackbar(err.response.data.err, { variant: 'error' }),
+        );
+    } catch (err: any) {
+      console.error('Error approving course:', err);
+    }
+
+  }
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ flex: '0 0 auto', backgroundColor: '#f0f0f0' }}>
+        <Header />
+      </Box>
       <Box
         sx={{
           flex: '1 0 auto',
@@ -175,7 +210,11 @@ export default function CourseContent() {
         <Grid container spacing={2}>
           <Grid item xs={8} sx={{ display: 'flex', flexDirection: 'column' }}>
             <Item sx={{ textAlign: 'center', flexGrow: 1 }}>
-              <Typography variant="h4" fontFamily="Roboto" sx={{ paddingTop: 3 }}>
+              <Typography
+                variant="h4"
+                fontFamily="Roboto"
+                sx={{ paddingTop: 3 }}
+              >
                 {courseData.title}
               </Typography>
               <Box
@@ -211,49 +250,68 @@ export default function CourseContent() {
               <Box
                 sx={{
                   display: 'flex',
-                  justifyContent: 'flex-end',
+                  justifyContent: 'space-between',
                   marginTop: 2,
                 }}
               >
                 <Button
                   variant="contained"
+                  color="error"
                   sx={{
-                    backgroundColor: '#14AA9E',
-                    '&:hover': {
-                      backgroundColor: '#14AA9E',
-                    },
                     mt: 3,
                     mb: 2,
-                    borderColor: 'primary.main',
+                    borderColor: 'error.main',
                     marginRight: 2,
                   }}
-                  onClick={clickApprove}
+                  onClick={handleReject}
                 >
-                  Approve
+                  Reject
                 </Button>
-                {questions.length > 0 && (
+                <Box>
+                  {questions && questions.length > 0 && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      sx={{
+                        mt: 3,
+                        mb: 2,
+                        borderColor: 'primary.main',
+                        marginRight: 2,
+                      }}
+                      onClick={handleViewQuiz}
+                    >
+                      View Quiz
+                    </Button>
+                  )}
                   <Button
                     variant="contained"
-                    color="primary"
                     sx={{
+                      backgroundColor: '#14AA9E',
+                      '&:hover': {
+                        backgroundColor: '#14AA9E',
+                      },
                       mt: 3,
                       mb: 2,
                       borderColor: 'primary.main',
                     }}
-                    onClick={handleViewQuiz}
+                    onClick={clickApprove}
                   >
-                    View Quiz
+                    Approve
                   </Button>
-                )}
+                </Box>
               </Box>
             </Item>
           </Grid>
           <Grid item xs={4} sx={{ display: 'flex', flexDirection: 'column' }}>
             <Item sx={{ textAlign: 'center', flexGrow: 1 }}>
-              <Typography variant="h5" fontFamily="Roboto" sx={{ paddingTop: 3 }}>
+              <Typography
+                variant="h5"
+                fontFamily="Roboto"
+                sx={{ paddingTop: 3 }}
+              >
                 Videos
               </Typography>
-              {units.length > 0 ? (
+              {units && units.length > 0 ? (
                 units.map((data: videoData, index) => (
                   <Box key={index}>
                     <Typography
@@ -276,7 +334,9 @@ export default function CourseContent() {
                   </Box>
                 ))
               ) : (
-                <Typography>No videos available</Typography>
+                <Typography sx={{ textAlign: 'center', color: 'red' }}>
+                  No videos available
+                </Typography>
               )}
             </Item>
           </Grid>
@@ -286,7 +346,7 @@ export default function CourseContent() {
         <DialogTitle>Quiz</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column' }}>
           <Grid container spacing={2}>
-            {questions.length > 0 ? (
+            {questions && questions.length > 0 ? (
               questions.map((question, index) => (
                 <Grid item xs={7} key={index}>
                   <Typography variant="h6">Question {index + 1}:</Typography>
@@ -300,7 +360,9 @@ export default function CourseContent() {
                 </Grid>
               ))
             ) : (
-              <Typography>No quiz questions available</Typography>
+              <Typography sx={{ textAlign: 'center', color: 'red' }}>
+                No quiz questions available
+              </Typography>
             )}
           </Grid>
         </DialogContent>
@@ -308,7 +370,14 @@ export default function CourseContent() {
           <Button onClick={handleCloseDialog}>Close</Button>
         </DialogActions>
       </Dialog>
+      <Box
+        sx={{
+          flex: '0 0 auto',
+          margin: '0 -10px -10px',
+        }}
+      >
+        <Footer />
+      </Box>
     </Box>
   );
 }
-
