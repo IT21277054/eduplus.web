@@ -11,6 +11,8 @@ import axios from 'axios';
 import { DoneOutline } from '@mui/icons-material';
 import Chip from '@mui/material/Chip';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
+import Header from '../../templates/Header';
+import { Footer } from '../../templates/Footer';
 
 interface CourseData {
   id:string;
@@ -19,13 +21,13 @@ interface CourseData {
   status: string;
 }
 export function PendingCourse() {
+  const { user} = React.useContext(AuthContext);
   const navigate = useNavigate();
   const [apiData, setApiData] = React.useState([]);
   const [errorMessage, setErrorMessage] = React.useState('');
 
   const fetchCardDetails = async () => {
-    const token =
-      'eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJpZCI6IjY2M2JiYTAyYzhjYTMxMDIwZjU5MTkzMCIsImVtYWlsIjoiYWRtaW5AZWRwdXBsdXMuY29tIiwic3ViIjoiYWRtaW5AZWRwdXBsdXMuY29tIiwiaWF0IjoxNzE1MjM5NTA3LCJleHAiOjE3MTUyNDEzMDd9.gfyNzMm2VjsfnTTzhFN3THqas7UhHXTNNTLDz_ZieiQ';
+    const token =user;
     try {
       axios
         .get('http://localhost:8085/api/course/status/pending', {
@@ -61,6 +63,9 @@ export function PendingCourse() {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box sx={{ flex: '0 0 auto', backgroundColor: '#f0f0f0' }}>
+        <Header />
+      </Box>
       <Box
         sx={{
           flex: '1 0 auto',
@@ -126,6 +131,14 @@ export function PendingCourse() {
             ))}
           </Grid>
         )}
+      </Box>
+      <Box
+        sx={{
+          flex: '0 0 auto',
+          margin: '0 -10px -10px',
+        }}
+      >
+        <Footer />
       </Box>
     </Box>
   );
