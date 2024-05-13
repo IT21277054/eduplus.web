@@ -62,6 +62,7 @@ export default function CourseContent() {
   const [questions, setQuestions] = React.useState<Question[]>([]);
   const [units, setUnits] = React.useState<videoData[]>([]);
   const [openDialog, setOpenDialog] = React.useState(false);
+  const [phoneNumber, setPhoneNumber] = React.useState('')
   const token = user;
 
   const fetchCourseDetails = async () => {
@@ -121,6 +122,18 @@ export default function CourseContent() {
     }
   };
 
+
+  const fetchUserDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8085/api/auth/user?id=${courseData.instructor_id}`,
+      );
+      console.log(response.data)
+      setPhoneNumber(response.data.phoneNumber)
+    } catch (error) {
+      console.error('Error fetching units details:', error);
+    }
+  };
   
   React.useEffect(() => {
     fetchCourseDetails();
@@ -130,6 +143,7 @@ export default function CourseContent() {
     if (courseData.course_id) {
       fetchQuizDetails();
       fetchUnitDetails();
+      fetchUserDetails();
     }
   }, [courseData]);
 
@@ -142,17 +156,35 @@ export default function CourseContent() {
   };
 
   const clickApprove = async () => {
+    console.log(token)
     try {
       await axios
-        .put(`http://localhost:8085/api/course/${id}/status?status=approved`)
-        .then(res => {
+        .put(`http://localhost:8085/api/course/${id}/status?status=approved`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(async res => {
+          await axios
+        .post(`http://localhost:8085/api/notification/sms`,
+        {
+          phoneNumber: phoneNumber,
+          message: `Your course ${courseData.title} has been approved`
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
           enqueueSnackbar('Approved Course Content', {
             variant: 'success',
           });
           navigate('/admin/dashboard/courses');
         })
         .catch(err =>
-          enqueueSnackbar(err.response.data.err, { variant: 'error' }),
+          enqueueSnackbar("Error occured try again later", { variant: 'error' }),
         );
     } catch (err: any) {
       console.error('Error approving course:', err);
@@ -162,7 +194,14 @@ export default function CourseContent() {
   const handleReject = async() =>{
     try {
       await axios
-        .put(`http://localhost:8085/api/course/${id}/status?status=rejected`)
+        .put(`http://localhost:8085/api/course/${id}/status?status=rejected`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+        )
         .then(res => {
           enqueueSnackbar('Rejected', {
             variant: 'error',
@@ -180,9 +219,6 @@ export default function CourseContent() {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Box sx={{ flex: '0 0 auto', backgroundColor: '#f0f0f0' }}>
-        <Header />
-      </Box>
       <Box
         sx={{
           flex: '1 0 auto',
@@ -370,14 +406,6 @@ export default function CourseContent() {
           <Button onClick={handleCloseDialog}>Close</Button>
         </DialogActions>
       </Dialog>
-      <Box
-        sx={{
-          flex: '0 0 auto',
-          margin: '0 -10px -10px',
-        }}
-      >
-        <Footer />
-      </Box>
     </Box>
   );
 }
