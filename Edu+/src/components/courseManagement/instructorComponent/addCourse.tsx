@@ -18,10 +18,10 @@ export default function AddCourse() {
     title: '',
     description: '',
     price: 0,
-    imageUrl: '' as string | ArrayBuffer | null, // Add typing for imageUrl
+    imageUrl: '' as string | ArrayBuffer | null,
   });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => { // Add type for 'e'
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCourse((prevCourse) => ({
       ...prevCourse,
@@ -29,8 +29,8 @@ export default function AddCourse() {
     }));
   };
 
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => { // Add type for 'e'
-    const file = e.target.files?.[0]; // Handle the possibility of files being undefined
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -43,13 +43,20 @@ export default function AddCourse() {
     }
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => { // Add type for 'event'
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      console.log("Course",course)
-      await axios.post('http://localhost:8085/api/course', course);
+      console.log("Course", course);
+      // Send course data along with all fields as query parameters
+      await axios.post('http://localhost:8085/api/course', course, {
+        params: {
+          course_id: course.course_id,
+          instructor_id: course.instructor_id,
+          title: course.title,
+          description: course.description
+        }
+      });
       enqueueSnackbar('Course added successfully', { variant: 'success' });
-      // Reset the form after successful submission
       setCourse({
         course_id: '',
         instructor_id: '',
@@ -118,40 +125,6 @@ export default function AddCourse() {
               value={course.description}
               onChange={handleChange}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="price"
-              label="Price"
-              name="price"
-              type="number"
-              value={course.price}
-              onChange={handleChange}
-            />
-            <input
-              accept="image/*"
-              id="image"
-              type="file"
-              style={{ display: 'none' }}
-              onChange={handleImageChange}
-            />
-            <label htmlFor="image">
-              <Button
-                variant="contained"
-                component="span"
-                sx={{ mt: 2, mb: 1 }}
-              >
-                Upload Image
-              </Button>
-            </label>
-            {course.imageUrl && (
-              <img
-                src={typeof course.imageUrl === 'string' ? course.imageUrl : ''}
-                alt="Course Image"
-                style={{ width: '100%', marginTop: '10px' }}
-              />
-            )}
             <Button
               type="submit"
               fullWidth
@@ -166,4 +139,3 @@ export default function AddCourse() {
     </ThemeProvider>
   );
 }
-
