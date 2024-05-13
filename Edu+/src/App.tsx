@@ -11,6 +11,36 @@ import CourseContent from "./components/courseManagement/adminComponents/CourseC
 import AllCourses from "./components/courseManagement/instructorComponent/displayCourse"
 import UnitDetailsList from "./components/courseManagement/instructorComponent/displayCourseContent"
 import QuizForm from "./components/courseManagement/instructorComponent/QizForm"
+import { AdminGuard, GuestGuard } from "./components/auth/authGuard"
+import Header from "./components/templates/Header"
+import { Footer } from "./components/templates/Footer"
+import { Home } from "./components/templates/Home"
+function GuestRoute() {
+  return (
+    <GuestGuard>
+      <Routes>
+        <Route path='/' element={<Home/>} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Routes>
+    </GuestGuard>
+  );
+}
+
+function AdminRoute(){
+  return (
+    <AdminGuard>
+      <Header/>
+      <Routes>
+      <Route path="/dashboard" element={<AdminDashboard />}></Route>
+      <Route path="/dashboard/instructor" element={<InstructorSignUp />}></Route>
+      <Route path="/dashboard/courses" element={<PendingCourse />}></Route>
+      <Route path="/dashboard/courses/:id" element={<CourseContent />} />
+      </Routes>
+      <Footer/>
+    </AdminGuard>
+  );
+}
 
 function App() {
 
@@ -33,6 +63,10 @@ function App() {
       <Route path="/instructor/dashboard/quizform" element={< QuizForm courseId={""}/>}></Route>
       <Route path="/instructor/dashboard/diplaycontent" element={<UnitDetailsList/>}/>
     </Routes>
+      <Routes>
+        <Route path="admin/*" element={<AdminRoute />} />
+        <Route path="*" element={<GuestRoute />} />
+      </Routes>
   </div>
   )
 }

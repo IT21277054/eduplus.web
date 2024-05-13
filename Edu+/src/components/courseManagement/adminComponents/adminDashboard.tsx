@@ -10,6 +10,8 @@ import { AuthContext } from '../../auth/authProvide';
 import { useNavigate } from 'react-router-dom';
 import image1 from '../../../assets/Register.png';
 import image2 from '../../../assets/coursecontent.png'
+import Header from '../../templates/Header';
+import { Footer } from '../../templates/Footer';
 
 export function AdminDashboard() {
   const navigate = useNavigate();
