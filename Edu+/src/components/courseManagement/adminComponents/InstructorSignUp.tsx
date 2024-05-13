@@ -120,9 +120,6 @@ export default function InstructorSignUp() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Box sx={{ flex: '0 0 auto', backgroundColor: '#f0f0f0' }}>
-        <Header />
-      </Box>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -264,14 +261,6 @@ export default function InstructorSignUp() {
           )}
         </Box>
       </Container>
-      <Box
-        sx={{
-          flex: '0 0 auto',
-          margin: '0 -10px -10px',
-        }}
-      >
-        <Footer />
-      </Box>
     </ThemeProvider>
   );
 }
