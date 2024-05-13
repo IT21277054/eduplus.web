@@ -63,9 +63,6 @@ export function PendingCourse() {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Box sx={{ flex: '0 0 auto', backgroundColor: '#f0f0f0' }}>
-        <Header />
-      </Box>
       <Box
         sx={{
           flex: '1 0 auto',
@@ -131,14 +128,6 @@ export function PendingCourse() {
             ))}
           </Grid>
         )}
-      </Box>
-      <Box
-        sx={{
-          flex: '0 0 auto',
-          margin: '0 -10px -10px',
-        }}
-      >
-        <Footer />
       </Box>
     </Box>
   );

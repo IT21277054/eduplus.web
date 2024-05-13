@@ -37,11 +37,11 @@ export default function Header() {
                 alt="Logo"
                 style={{
                   height: 'auto',
-                  maxWidth: '200px',
+                  maxWidth: '55px',
                   maxHeight: '130px',
                   marginRight:'auto',
                   marginLeft:'40px',
-                  marginTop:'20px'
+                  // marginTop:'20px'
                 }}
               />
             </NavLink>
@@ -57,7 +57,7 @@ export default function Header() {
                   fontSize: 15,
                   textTransform: 'none',
                   '&:hover': {
-                    backgroundColor: '#14AA9E',
+                    backgroundColor: '#020024',
                   },
                 }}
               >

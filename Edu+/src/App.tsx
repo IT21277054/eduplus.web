@@ -7,10 +7,13 @@ import { PendingCourse } from "./components/courseManagement/adminComponents/Pen
 import CourseContent from "./components/courseManagement/adminComponents/CourseContent"
 import { AdminGuard, GuestGuard } from "./components/auth/authGuard"
 import Header from "./components/templates/Header"
+import { Footer } from "./components/templates/Footer"
+import { Home } from "./components/templates/Home"
 function GuestRoute() {
   return (
     <GuestGuard>
       <Routes>
+        <Route path='/' element={<Home/>} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
       </Routes>
@@ -21,12 +24,14 @@ function GuestRoute() {
 function AdminRoute(){
   return (
     <AdminGuard>
+      <Header/>
       <Routes>
       <Route path="/dashboard" element={<AdminDashboard />}></Route>
       <Route path="/dashboard/instructor" element={<InstructorSignUp />}></Route>
       <Route path="/dashboard/courses" element={<PendingCourse />}></Route>
       <Route path="/dashboard/courses/:id" element={<CourseContent />} />
       </Routes>
+      <Footer/>
     </AdminGuard>
   );
 }
@@ -36,20 +41,10 @@ function App() {
 
   return (
     <div >
-    {/* <Routes>
-      <Route path="/signin" element={<SignIn />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/admin/dashboard" element={<AdminDashboard />}></Route>
-      <Route path="/admin/dashboard/instructor" element={<InstructorSignUp />}></Route>
-      <Route path="/admin/dashboard/courses" element={<PendingCourse />}></Route>
-      <Route path="/admin/dashboard/courses/:id" element={<CourseContent />} />
-    </Routes> */}
-    
       <Routes>
         <Route path="admin/*" element={<AdminRoute />} />
         <Route path="*" element={<GuestRoute />} />
       </Routes>
-
   </div>
   )
 }
