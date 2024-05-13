@@ -25,12 +25,9 @@ export function Footer() {
               align="center"
               sx={{ fontSize: 20 }}
             >
-              {'Copyright '}
-              <Link color="inherit" href="https://mui.com/">
-                Edu+
-              </Link>{' '}
-              {new Date().getFullYear()}
-              {'.'}
+              <p>
+                &copy; {new Date().getFullYear()} EduPlus. All rights reserved.
+              </p>
             </Typography>
           </Grid>
           <Grid item xs={12}>

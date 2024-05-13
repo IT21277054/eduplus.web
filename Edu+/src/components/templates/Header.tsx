@@ -3,11 +3,9 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import { AuthContext } from '../auth/authProvide';
 import { useNavigate, NavLink } from 'react-router-dom';
-import logo from '../../assets/edu+.png'
+import logo from '../../assets/edu+.png';
 
 export default function Header() {
   const { user, logout } = React.useContext(AuthContext);
@@ -27,10 +25,12 @@ export default function Header() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ backgroundColor: '#14AA9E', boxShadow: 'none', height: '64px' }}>
+      <AppBar
+        position="static"
+        sx={{ backgroundColor: '#14AA9E', boxShadow: 'none', height: '64px' }}
+      >
         <Toolbar sx={{ justifyContent: 'space-between', padding: '0 20px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            
             <NavLink to="/user" sx={{ display: 'flex', alignItems: 'center' }}>
               <img
                 src={logo}
