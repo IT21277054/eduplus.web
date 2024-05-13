@@ -3,6 +3,7 @@ import SignIn from "./components/userManagement/SignIn"
 import SignUp from "./components/userManagement/SignUp"
 import { AdminDashboard } from "./components/courseManagement/adminComponents/adminDashboard"
 import InstructorSignUp from "./components/courseManagement/adminComponents/InstructorSignUp"
+import LearnerDashboard from "./components/learnerManagement/LearnerDashbord"
 
 
 function App() {
@@ -15,6 +16,10 @@ function App() {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />}></Route>
       <Route path="/admin/dashboard/instructor" element={<InstructorSignUp />}></Route>
+
+      {/* Learner routes*/}
+      <Route path="/learner/dashboard" element={<LearnerDashboard />}></Route>
+      
     </Routes>
   </div>
   )
